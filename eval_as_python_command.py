@@ -58,24 +58,32 @@ import sublime_plugin
 
 def exec_and_eval(expr):
     body = ast.parse(expr).body
-    if len(body) > 0 and type(body[-1]) == ast.Expr:
-        eval(compile(ast.Module(body[:-1]), '<string>', 'exec'))
-        return eval(compile(ast.Expression(body[-1].value), '<string>', 'eval'))
+    
+    if len(body) == 0:
+        raise Exception('Nothing to evaluate')
+
+    if type(body[-1]) != ast.Expr:
+        raise Exception('Last statement must be an Expression')
+
+    eval(compile(ast.Module(body[:-1]), '<string>', 'exec'))
+    return eval(compile(ast.Expression(body[-1].value), '<string>', 'eval'))
 
 class EvalAsPythonCommand(sublime_plugin.TextCommand):
     def run(self, edit):
         try:
+            none_count = 0
             results = []
-            for region in self.view.sel():
+
+            for region in reversed(self.view.sel()):
                 result = exec_and_eval(self.view.substr(region))
                 if result is not None:
                     results.append((result, region))
+                else:
+                    none_count += 1
 
-            if len(results) == 0:
-                sublime.status_message('Nothing to evaluate')
-            else:
-                for result, region in results:
-                    self.view.replace(edit, region, str(result))
-                sublime.status_message('Successfully evaluated {} regions as Python'.format(len(results)))
+            for result, region in results:
+                self.view.replace(edit, region, str(result))
+            message_template = 'Evaluated {} region(s); {} region(s) returned None'
+            sublime.status_message(message_template.format(len(self.view.sel()), none_count))
         except Exception as e:
             sublime.error_message('Python Error: {}'.format(str(e)))
