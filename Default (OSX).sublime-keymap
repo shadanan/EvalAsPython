@@ -1,0 +1,6 @@
+[
+	{
+		"keys": ["super+ctrl+enter"], 
+		"command": "eval_as_python"
+	}
+]

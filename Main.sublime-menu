@@ -1,0 +1,12 @@
+[
+	{
+		"id": "tools",
+		"children":
+		[{
+			"id": "Eval as Python",
+            "mnemonic": "e",
+			"caption": "Eval as Python",
+			"command": "eval_as_python"
+		}]
+	}
+]
