@@ -55,13 +55,19 @@ import urllib
 import sublime
 import sublime_plugin
 
+def exec_and_eval(expr):
+    lines = expr.strip().split('\n')
+    if len(lines) > 0 and not re.match('^\s', lines[-1]):
+        exec('\n'.join(lines[:-1]))
+        return eval(lines[-1])
+
 class EvalAsPythonCommand(sublime_plugin.TextCommand):
     def run(self, edit):
         try:
             results = []
             for region in self.view.sel():
-                if self.view.substr(region) != '':
-                    result = eval(self.view.substr(region))
+                result = exec_and_eval(self.view.substr(region))
+                if result is not None:
                     results.append((result, region))
 
             if len(results) == 0:
