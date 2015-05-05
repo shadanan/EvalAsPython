@@ -52,14 +52,15 @@ import uu
 
 import urllib
 
+import ast
 import sublime
 import sublime_plugin
 
 def exec_and_eval(expr):
-    lines = expr.strip().split('\n')
-    if len(lines) > 0 and not re.match('^\s', lines[-1]):
-        exec('\n'.join(lines[:-1]))
-        return eval(lines[-1])
+    body = ast.parse(expr).body
+    if len(body) > 0 and type(body[-1]) == ast.Expr:
+        eval(compile(ast.Module(body[:-1]), '<string>', 'exec'))
+        return eval(compile(ast.Expression(body[-1].value), '<string>', 'eval'))
 
 class EvalAsPythonCommand(sublime_plugin.TextCommand):
     def run(self, edit):
