@@ -53,7 +53,7 @@ import sublime_plugin
 def sh(cmd):
     popen = subprocess.Popen(cmd, stdout=subprocess.PIPE)
     stdout, _ = popen.communicate()
-    return stdout
+    return stdout.decode('utf-8')
 
 
 class EvalAsPythonCommand(sublime_plugin.TextCommand):
