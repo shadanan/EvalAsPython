@@ -87,16 +87,16 @@ class EvalAsPythonCommand(sublime_plugin.TextCommand):
                     self.view.replace(edit, region, str(result))
 
             status = []
-            status.append('Evaluated {} {}'.format(
+            status.append('Evaluated {0} {1}'.format(
                 self.counts['total'], 
                 'region' if self.counts['total'] == 1 else 'regions'))
             if self.counts['none'] > 0:
-                status.append('{} returned None'.format(self.counts['none']))
+                status.append('{0} returned None'.format(self.counts['none']))
             if self.counts['empty'] > 0:
-                status.append('{} were empty'.format(self.counts['empty']))
+                status.append('{0} were empty'.format(self.counts['empty']))
             if self.counts['non_expression'] > 0:
-                status.append('{} were not expressions'.format(self.counts['non_expression']))
+                status.append('{0} were not expressions'.format(self.counts['non_expression']))
             sublime.status_message('; '.join(status))
         except Exception as e:
             traceback.print_exc()
-            sublime.error_message('Python Exception: {}'.format(str(e)))
+            sublime.error_message('Python Exception: {0}'.format(str(e)))
