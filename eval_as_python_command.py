@@ -2,6 +2,7 @@
 import os
 import sys
 import time
+import subprocess
 
 import re
 import string
@@ -47,6 +48,12 @@ import ast
 import traceback
 import sublime
 import sublime_plugin
+
+
+def sh(cmd):
+    popen = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+    stdout, _ = popen.communicate()
+    return stdout
 
 
 class EvalAsPythonCommand(sublime_plugin.TextCommand):
