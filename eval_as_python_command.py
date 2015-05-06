@@ -1,16 +1,10 @@
 # Make a bunch of packages available to eval
 import os
-import io
 import sys
 import time
 
-import string
 import re
-import difflib
-import textwrap
-import unicodedata
-import stringprep
-import rlcompleter
+import string
 
 import struct
 import codecs
@@ -18,8 +12,6 @@ import codecs
 import datetime
 import calendar
 import collections
-import heapq
-import bisect
 import types
 import pprint
 
@@ -34,7 +26,6 @@ import itertools
 import functools
 import operator
 
-import os
 import stat
 import glob
 import fnmatch
@@ -53,37 +44,52 @@ import uu
 import urllib
 
 import ast
+import traceback
 import sublime
 import sublime_plugin
 
-def exec_and_eval(expr):
-    body = ast.parse(expr).body
-    
-    if len(body) == 0:
-        raise Exception('Nothing to evaluate')
-
-    if type(body[-1]) != ast.Expr:
-        raise Exception('Last statement must be an Expression')
-
-    eval(compile(ast.Module(body[:-1]), '<string>', 'exec'))
-    return eval(compile(ast.Expression(body[-1].value), '<string>', 'eval'))
 
 class EvalAsPythonCommand(sublime_plugin.TextCommand):
+    def exec_and_eval(self, expr):
+        module = ast.parse(expr)
+
+        if len(module.body) == 0:
+            self.counts['empty'] += 1
+            return None
+
+        if type(module.body[-1]) != ast.Expr:
+            self.counts['non_expression'] += 1
+            return eval(compile(module, '<string>', 'exec'))
+
+        eval(compile(ast.Module(module.body[:-1]), '<string>', 'exec'))
+        result = eval(compile(ast.Expression(module.body[-1].value), '<string>', 'eval'))
+
+        if result is None:
+            self.counts['none'] += 1
+
+        return result
+
     def run(self, edit):
         try:
-            none_count = 0
-            results = []
-
-            for region in reversed(self.view.sel()):
-                result = exec_and_eval(self.view.substr(region))
-                if result is not None:
-                    results.append((result, region))
-                else:
-                    none_count += 1
+            self.counts = {'empty': 0, 'non_expression': 0, 'none': 0, 'total': len(self.view.sel())}
+            results = [(self.exec_and_eval(self.view.substr(region)), region) 
+                       for region in reversed(self.view.sel())]
 
             for result, region in results:
-                self.view.replace(edit, region, str(result))
-            message_template = 'Evaluated {} region(s); {} region(s) returned None'
-            sublime.status_message(message_template.format(len(self.view.sel()), none_count))
+                if result is not None:
+                    self.view.replace(edit, region, str(result))
+
+            status = []
+            status.append('Evaluated {} {}'.format(
+                self.counts['total'], 
+                'region' if self.counts['total'] == 1 else 'regions'))
+            if self.counts['none'] > 0:
+                status.append('{} returned None'.format(self.counts['none']))
+            if self.counts['empty'] > 0:
+                status.append('{} were empty'.format(self.counts['empty']))
+            if self.counts['non_expression'] > 0:
+                status.append('{} were not expressions'.format(self.counts['non_expression']))
+            sublime.status_message('; '.join(status))
         except Exception as e:
-            sublime.error_message('Python Error: {}'.format(str(e)))
+            traceback.print_exc()
+            sublime.error_message('Python Exception: {}'.format(str(e)))
