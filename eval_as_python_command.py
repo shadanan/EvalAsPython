@@ -50,14 +50,26 @@ import sublime
 import sublime_plugin
 
 
+_cwd = os.path.expanduser('~')
+def set_cwd(cwd):
+    global _cwd
+    _cwd = cwd
+
+
 def sh(cmd):
-    popen = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+    popen = subprocess.Popen(cmd, stdout=subprocess.PIPE, cwd=_cwd)
     stdout, _ = popen.communicate()
     return stdout.decode('utf-8')
 
 
 class AbstractEvalAsPython(sublime_plugin.TextCommand):
     def exec_and_eval(self, expr):
+        folders = self.view.window().folders()
+        if len(folders) > 0:
+            set_cwd(folders[0])
+        else:
+            set_cwd(os.path.expanduser('~'))
+
         module = ast.parse(expr)
 
         if len(module.body) == 0:
