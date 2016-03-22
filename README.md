@@ -5,4 +5,36 @@ Sublime Text 3 plugin to evaluate Python code and replace with the result inline
 Search for EvalAsPython in package control.
 
 ## Usage
-Select some code, and press ```Command + Shift + E```
+Append the result of evaluating the expression on the next line: ```Command + Shift + E```
+Replace the selected expression with the result: ```Command + Control + Shift + E```
+
+## Examples
+Select these code fragments and press ```Command + Shift + E``` to evaluate them:
+
+Execute a shell command: 
+
+    sh(['ls', '-al'])
+
+Join a list of strings:
+
+    "\n".join(['line1', 'line2', 'line3'])
+
+Split strings:
+
+    "field1,field2,field3,field4".split(',')
+
+Sum a bunch of numbers separated by commas:
+
+    sum([int(x) for x in "13,24,97,28".split(',')])
+
+Encode in base 64: 
+
+    base64.encodebytes(b'unencoded message')
+
+Download a string from a URL:
+
+    urllib.request.urlopen('http://python.org/').read()
+
+Or using curl:
+
+    sh(['curl', 'http://python.org/'])

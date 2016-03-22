@@ -107,7 +107,7 @@ class AbstractEvalAsPython(sublime_plugin.TextCommand):
 
 class EvalAsPythonCommand(AbstractEvalAsPython):
     def write(self, edit, region, result):
-        self.view.insert(edit, region.end(), str(result))
+        self.view.insert(edit, region.end(), "\n" + str(result))
 
 
 class ReplaceAsPythonCommand(AbstractEvalAsPython):
