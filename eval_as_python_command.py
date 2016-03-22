@@ -56,7 +56,7 @@ def sh(cmd):
     return stdout.decode('utf-8')
 
 
-class EvalAsPythonCommand(sublime_plugin.TextCommand):
+class AbstractEvalAsPython(sublime_plugin.TextCommand):
     def exec_and_eval(self, expr):
         module = ast.parse(expr)
 
@@ -76,6 +76,9 @@ class EvalAsPythonCommand(sublime_plugin.TextCommand):
 
         return result
 
+    def write(self, edit, region, result):
+        raise Exception("Method is abstract")
+
     def run(self, edit):
         try:
             self.counts = {'empty': 0, 'non_expression': 0, 'none': 0, 'total': len(self.view.sel())}
@@ -84,7 +87,7 @@ class EvalAsPythonCommand(sublime_plugin.TextCommand):
 
             for result, region in results:
                 if result is not None:
-                    self.view.replace(edit, region, str(result))
+                    self.write(edit, region, result)
 
             status = []
             status.append('Evaluated {0} {1}'.format(
@@ -100,3 +103,13 @@ class EvalAsPythonCommand(sublime_plugin.TextCommand):
         except Exception as e:
             traceback.print_exc()
             sublime.error_message('Python Exception: {0}'.format(str(e)))
+
+
+class EvalAsPythonCommand(AbstractEvalAsPython):
+    def write(self, edit, region, result):
+        self.view.insert(edit, region.end(), str(result))
+
+
+class ReplaceAsPythonCommand(AbstractEvalAsPython):
+    def write(self, edit, region, result):
+        self.view.replace(edit, region, str(result))

@@ -4,9 +4,14 @@
 		"children":
 		[{
 			"id": "Eval as Python",
-            "mnemonic": "e",
+			"mnemonic": "e",
 			"caption": "Eval as Python",
 			"command": "eval_as_python"
+		},
+		{
+			"id": "Replace as Python",
+			"caption": "Replace as Python",
+			"command": "replace_as_python"
 		}]
 	}
 ]
