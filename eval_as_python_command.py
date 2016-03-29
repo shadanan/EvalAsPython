@@ -49,7 +49,8 @@ import traceback
 import sublime
 import sublime_plugin
 
-from . import requests
+sys.path.append(os.path.dirname(os.path.realpath(__file__)))
+import requests
 
 
 _cwd = os.path.expanduser('~')
