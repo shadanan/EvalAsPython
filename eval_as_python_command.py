@@ -97,14 +97,18 @@ class AbstractEvalAsPython(sublime_plugin.TextCommand):
         try:
             self.counts = {'empty': 0, 'non_expression': 0, 'none': 0, 'total': len(self.view.sel())}
 
+            # Store results instead of writing to make evaluation atomic
+            results = []
             for region in reversed(self.view.sel()):
                 if region.empty():
                     region = self.view.line(region)
-
                 result = self.exec_and_eval(self.view.substr(region))
-
                 if result is not None:
-                    self.write(edit, region, result)
+                    results.append((region, result))
+            
+            # If no exceptions occurred, write the results to the file
+            for region, result in results:
+                self.write(edit, region, result)
 
             status = []
             status.append('Evaluated {0} {1}'.format(
