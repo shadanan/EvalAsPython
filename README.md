@@ -12,8 +12,6 @@ Replace the selected expression with the result: ```Command + Control + Shift + 
 
 `sh(cmd)` -> `subprocess.Popen(cmd)` and returns stdout, stderr as a tuple, decoded as utf-8. The current working directory is obtained from the current file's view window. If this does not exist, we default to the home directory.
 
-`urlopen(*args, **kwargs)` -> `urllib.request.urlopen(*args, **kwargs).read().decode('utf-8')`
-
 ## Examples
 Select these code fragments and press ```Command + Shift + E``` to evaluate them:
 
@@ -23,7 +21,7 @@ Execute a shell command:
 
 Download a string from a URL:
 
-    urlopen('http://python.org/')
+    requests.get('http://python.org/').text
 
 Or using curl:
 

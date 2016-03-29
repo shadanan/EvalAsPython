@@ -49,6 +49,8 @@ import traceback
 import sublime
 import sublime_plugin
 
+from . import requests
+
 
 _cwd = os.path.expanduser('~')
 def _set_cwd(cwd):
@@ -60,10 +62,6 @@ def sh(cmd):
     popen = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=_cwd)
     stdout, stderr = popen.communicate()
     return stdout.decode('utf-8'), stderr.decode('utf-8')
-
-
-def urlopen(*args, **kwargs):
-    return urllib.request.urlopen(*args, **kwargs).read().decode('utf-8')
 
 
 class AbstractEvalAsPython(sublime_plugin.TextCommand):
