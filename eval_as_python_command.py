@@ -57,9 +57,9 @@ def set_cwd(cwd):
 
 
 def sh(cmd):
-    popen = subprocess.Popen(cmd, stdout=subprocess.PIPE, cwd=_cwd)
-    stdout, _ = popen.communicate()
-    return stdout.decode('utf-8')
+    popen = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=_cwd)
+    stdout, stderr = popen.communicate()
+    return stdout.decode('utf-8'), stderr.decode('utf-8')
 
 
 class AbstractEvalAsPython(sublime_plugin.TextCommand):
