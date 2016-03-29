@@ -5,15 +5,15 @@ Sublime Text 3 plugin to evaluate Python code and replace with the result inline
 Search for EvalAsPython in package control.
 
 ## Usage
-Append the result of evaluating the expression on the next line: ```Command + Shift + E```
-Replace the selected expression with the result: ```Command + Control + Shift + E```
+Append the result of evaluating the expression on the next line: ```Shift + Enter```
+Replace the selected expression with the result: ```Control + Shift + Enter```
 
 ## Helper Functions
 
 `sh(cmd)` -> `subprocess.Popen(cmd)` and returns stdout, stderr as a tuple, decoded as utf-8. The current working directory is obtained from the current file's view window. If this does not exist, we default to the home directory.
 
 ## Examples
-Select these code fragments and press ```Command + Shift + E``` to evaluate them:
+Select these code fragments and press ```Shift + Enter``` to evaluate them:
 
 Execute a shell command: 
 

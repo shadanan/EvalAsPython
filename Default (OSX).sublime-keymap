@@ -1,10 +1,10 @@
 [
 	{
-		"keys": ["super+shift+e"], 
+		"keys": ["shift+enter"], 
 		"command": "eval_as_python"
 	},
 	{
-		"keys": ["super+shift+control+e"], 
+		"keys": ["control+shift+enter"], 
 		"command": "replace_as_python"
 	}
 ]
