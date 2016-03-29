@@ -96,10 +96,13 @@ class AbstractEvalAsPython(sublime_plugin.TextCommand):
     def run(self, edit):
         try:
             self.counts = {'empty': 0, 'non_expression': 0, 'none': 0, 'total': len(self.view.sel())}
-            results = [(self.exec_and_eval(self.view.substr(region)), region) 
-                       for region in reversed(self.view.sel())]
 
-            for result, region in results:
+            for region in reversed(self.view.sel()):
+                if region.empty():
+                    region = self.view.line(region)
+
+                result = self.exec_and_eval(self.view.substr(region))
+
                 if result is not None:
                     self.write(edit, region, result)
 
