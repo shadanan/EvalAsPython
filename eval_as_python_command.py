@@ -51,7 +51,7 @@ import sublime_plugin
 
 
 _cwd = os.path.expanduser('~')
-def set_cwd(cwd):
+def _set_cwd(cwd):
     global _cwd
     _cwd = cwd
 
@@ -62,13 +62,17 @@ def sh(cmd):
     return stdout.decode('utf-8'), stderr.decode('utf-8')
 
 
+def urlopen(*args, **kwargs):
+    return urllib.request.urlopen(*args, **kwargs).read().decode('utf-8')
+
+
 class AbstractEvalAsPython(sublime_plugin.TextCommand):
     def exec_and_eval(self, expr):
         folders = self.view.window().folders()
         if len(folders) > 0:
-            set_cwd(folders[0])
+            _set_cwd(folders[0])
         else:
-            set_cwd(os.path.expanduser('~'))
+            _set_cwd(os.path.expanduser('~'))
 
         module = ast.parse(expr)
 

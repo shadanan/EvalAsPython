@@ -8,12 +8,26 @@ Search for EvalAsPython in package control.
 Append the result of evaluating the expression on the next line: ```Command + Shift + E```
 Replace the selected expression with the result: ```Command + Control + Shift + E```
 
+## Helper Functions
+
+`sh(cmd)` -> `subprocess.Popen(cmd)` and returns stdout, stderr as a tuple, decoded as utf-8. The current working directory is obtained from the current file's view window. If this does not exist, we default to the home directory.
+
+`urlopen(*args, **kwargs)` -> `urllib.request.urlopen(*args, **kwargs).read().decode('utf-8')`
+
 ## Examples
 Select these code fragments and press ```Command + Shift + E``` to evaluate them:
 
 Execute a shell command: 
 
     sh(['ls', '-al'])
+
+Download a string from a URL:
+
+    urlopen('http://python.org/')
+
+Or using curl:
+
+    sh(['curl', 'http://python.org/'])
 
 Join a list of strings:
 
@@ -30,11 +44,3 @@ Sum a bunch of numbers separated by commas:
 Encode in base 64: 
 
     base64.encodebytes(b'unencoded message')
-
-Download a string from a URL:
-
-    urllib.request.urlopen('http://python.org/').read()
-
-Or using curl:
-
-    sh(['curl', 'http://python.org/'])
